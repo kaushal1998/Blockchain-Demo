@@ -6,22 +6,140 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
     <link rel="stylesheet" type="text/css" href="main.css">
-
-    <script src="./node_modules/web3/dist/web3.min.js"></script>
 
 </head>
 <body>
-    <div class="container">
+    <nav class="blue"> 
+        <div class="nav-wrapper">
+            <a href="#" class="brand-logo blue left" style="margin-left:15px;">Blockchain-Demo</a>
+        </div>
+    </nav>
+    <div class="container" style="width:85%;">
 
-        
+        <div class="row" >
 
+            <div class="col s5" style="margin-top:10%;">
+
+                <div class="input-field">
+                    <input disabled value="---" id="logged_address" type="text" class="validate" style="color: black;">
+                    <label class="active" for="logged_address">Active Account :</label>
+                </div>
+                <br>
+
+                <div class="input-field">
+                    <input disabled value="---" id="logged_balance" type="text" class="validate" style="color: black;">
+                    <label class="active" for="logged_balance">Balance :</label>
+                </div>
+                
+            </div>
+
+            <div class="col s2">
+                <hr style="width:1px; height:500px; background-color:#42484b;">
+            </div>
+
+            <div class="col s5" style="margin-top:10%;">
+
+                <div class="input-field">
+                    <input placeholder="Enter address of receiver" id="to_address" type="text" class="validate">
+                    <label for="to_address">Account Address of Receiver :</label>
+                </div>
+                <br>
+                <div class="input-field">
+                    <input placeholder="Enter amount of tokens to send" id="token_quantity" type="number" class="validate">
+                    <label for="token_quantity">Green Coins to Send :</label>
+                </div>
+                <br>
+                <center>
+                    <a class="waves-effect waves-light blue btn" id="btn" href="javascript:transact();">Transact</a>
+                </center>
+                
+            </div>
+
+        </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <div id="modal1" class="modal">
+        <div class="modal-content">
+            <h4>Warning</h4>
+            <p>Admin account access restricted !</p>
+            <p>Cannot transfer using this account</p>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script src="./node_modules/web3/dist/web3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
 
     <script>
-       // Our future code here..
+
+        var Token;
+
+        $(document).ready(function (){
+
+            $('.modal').modal({dismissible:false});
+
+            if (typeof web3 !== 'undefined') {
+                web3 = new Web3(web3.currentProvider);
+            } else {
+            // set the provider you want from Web3.providers
+                web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+            }
+
+            web3.eth.defaultAccount = web3.eth.accounts[0];
+            $('#logged_address').val(web3.eth.defaultAccount);
+
+            Token2ABI = [ { "constant": false, "inputs": [ { "name": "_spender", "type": "address" }, { "name": "_value", "type": "uint256" } ], "name": "approve", "outputs": [ { "name": "success", "type": "bool" } ], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [ { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" } ], "name": "transfer", "outputs": [ { "name": "success", "type": "bool" } ], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "constant": false, "inputs": [ { "name": "_from", "type": "address" }, { "name": "_to", "type": "address" }, { "name": "_value", "type": "uint256" } ], "name": "transferFrom", "outputs": [ { "name": "success", "type": "bool" } ], "payable": false, "stateMutability": "nonpayable", "type": "function" }, { "inputs": [ { "name": "_initialAmount", "type": "uint256" }, { "name": "_tokenName", "type": "string" }, { "name": "_decimalUnits", "type": "uint8" }, { "name": "_tokenSymbol", "type": "string" } ], "payable": false, "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [ { "indexed": true, "name": "_from", "type": "address" }, { "indexed": true, "name": "_to", "type": "address" }, { "indexed": false, "name": "_value", "type": "uint256" } ], "name": "Transfer", "type": "event" }, { "anonymous": false, "inputs": [ { "indexed": true, "name": "_owner", "type": "address" }, { "indexed": true, "name": "_spender", "type": "address" }, { "indexed": false, "name": "_value", "type": "uint256" } ], "name": "Approval", "type": "event" }, { "constant": true, "inputs": [ { "name": "_owner", "type": "address" }, { "name": "_spender", "type": "address" } ], "name": "allowance", "outputs": [ { "name": "remaining", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "address" }, { "name": "", "type": "address" } ], "name": "allowed", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "_owner", "type": "address" } ], "name": "balanceOf", "outputs": [ { "name": "balance", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [ { "name": "", "type": "address" } ], "name": "balances", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "decimals", "outputs": [ { "name": "", "type": "uint8" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "name", "outputs": [ { "name": "", "type": "string" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "symbol", "outputs": [ { "name": "", "type": "string" } ], "payable": false, "stateMutability": "view", "type": "function" }, { "constant": true, "inputs": [], "name": "totalSupply", "outputs": [ { "name": "", "type": "uint256" } ], "payable": false, "stateMutability": "view", "type": "function" } ];
+            var Token2Contract = web3.eth.contract(Token2ABI);
+            var Token2Address = '0x0980762134a86374fb8dcf56fa8cf3efa1f5b828';
+            Token2 = Token2Contract.at(Token2Address)
+
+
+            Token2.balanceOf(web3.eth.defaultAccount, function(error, result){
+                if(!error){
+                    $("#logged_balance").val(result.c[0]);
+                    console.log(result.c[0]);
+                } else
+                    console.error(error);
+            });
+
+            //Admin restriction
+            if (web3.eth.defaultAccount == '0x15ae59800213da008247dc7018ef4a2c5cfd2e6e'){
+                $('#modal1').modal('open');
+            }
+
+            var transferEvent = Token2.Transfer();
+
+            transferEvent.watch(function (error, result){
+                if(!error){
+                    Token2.balanceOf(web3.eth.defaultAccount, function(error, result){
+                        if(!error){
+                            $("#logged_balance").val(result.c[0]);
+                            console.log(result.c[0]);
+                        } else
+                            console.error(error);
+                    });
+
+                }else{
+                    console.log("transferwatch : "+error);
+                    
+                }
+
+            })
+
+
+        })
+        function transact(){
+            var receiver = $('#to_address').val();
+            var quantity = $('#token_quantity').val();
+            
+            Token2.transferFrom(web3.eth.defaultAccount, receiver, quantity, function(error, result){
+                    console.log(result);
+                    
+                })
+        }
     </script>
 
 </body>

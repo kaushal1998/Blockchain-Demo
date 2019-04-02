@@ -9,6 +9,6 @@
   "author": "Kaushal Mhalgi, Siddharth Dekhane, Kaushik Vishwanath",
   "license": "ISC",
   "dependencies": {
-    "web3": "github:ethereum/web3.js"
+    "web3": "git://github.com/ethereum/web3.js.git#master"
   }
 }
