@@ -1,0 +1,9 @@
+Init genesis:
+# geth init genesis.json
+
+Start Blockchain :
+# geth --networkid 1994 -rpc --rpccorsdomain "*" --rpcapi "db,eth,net,web3,personal,miner"
+
+Attach JS console:
+# geth attach /root/.ethereum/geth.ipc
+
